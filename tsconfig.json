@@ -10,8 +10,11 @@
       "dom"
     ],
     "typeRoots": ["node_modules/@types"],
-    "rootDir": "./src/ts",
-    "outDir": "./public"
+    "rootDir": "./",
+	"baseUrl": ".",
+	"paths": {
+		"ore-three" : ["./src/ts/libs/ore-three/packages/ore-three/src"]
+	}
   },
   "include": ["./src/"]
 } 

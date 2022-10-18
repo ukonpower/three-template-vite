@@ -13,11 +13,9 @@ const input = {
 
 		pageList.forEach( ( page ) => {
 
-			exEntryList[ page.name || page.path ] = path.resolve( __dirname, 'src' + page.path + '/index.html' );
+			exEntryList[ page.name || page.path ] = path.resolve( __dirname, 'src/page' + page.path + '/index.html' );
 
 		} );
-
-		console.log( exEntryList);
 
 		return exEntryList;
 
@@ -40,13 +38,13 @@ export default defineConfig( {
 	},
 	resolve: {
 		alias: {
-			"@ore-three": path.join( __dirname, "packages/ore-three/src" )
+			"ore-three": path.join( __dirname, "src/ts/libs/ore-three/packages/ore-three/src" )
 		},
 	},
 	plugins: [
 		{
 			...glslify( {
-				basedir: './src/glsl-chunks/',
+				basedir: './src/ts/glsl-chunks/',
 				transform: [
 					[ 'glslify-hex' ],
 					[ 'glslify-import' ]

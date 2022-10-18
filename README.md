@@ -4,14 +4,29 @@ This is a template using threejs and ore-three.
 
 ![](./screenshot/three-template-ts.png)
 
-## Install
+# Install
+
+## packages
 
 ```
 npm install
 ```
 
-## Run
+## submodules
 
 ```
-npx gulp
+git submodule init
+git submodule update
+```
+
+# Run
+
+```
+npm run dev
+```
+
+# Build
+
+```
+npm run build
 ```

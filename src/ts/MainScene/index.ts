@@ -26,7 +26,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		this.gManager.assetManager.load( {
 			assets: [
-				{ name: 'scene', path: './assets/scene/scene.glb', type: 'gltf' }
+				{ name: 'scene', path: '/assets/scene/scene.glb', type: 'gltf' }
 			]
 		} );
 
