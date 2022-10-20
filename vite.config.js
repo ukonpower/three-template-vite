@@ -13,7 +13,7 @@ const input = {
 
 		pageList.forEach( ( page ) => {
 
-			exEntryList[ page.name || page.path ] = path.resolve( __dirname, 'src/page' + page.path + '/index.html' );
+			exEntryList[ page.name || page.path ] = path.resolve( __dirname, 'src/', page.path, '/index.html' );
 
 		} );
 
