@@ -1,8 +1,8 @@
-# three-template-ts
+# three-template-vite
 
 This is a template using threejs and ore-three.
 
-![](./screenshot/three-template-ts.png)
+![](./screenshot/three-template-vite.png)
 
 # Install
 
