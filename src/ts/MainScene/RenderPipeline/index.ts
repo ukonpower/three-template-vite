@@ -304,8 +304,6 @@ export class RenderPipeline {
 		this.compositePP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: compo,
 			uniforms: ORE.UniformsLib.mergeUniforms( {
-				uNoiseTex: window.gManager.assetManager.getTex( 'noise' ),
-				uLensDirtTex: window.gManager.assetManager.getTex( 'lensDirt' ),
 				uBrightness: this.animator.add( {
 					name: 'bloomBrightness',
 					initValue: 2.0,
