@@ -1,8 +1,8 @@
-import * as ORE from 'ore-three';
-
+import { Pane } from 'tweakpane';
 import { AssetManager } from './AssetManager';
 import { EasyRaycaster } from './EasyRaycaster';
-import { Pane } from 'tweakpane';
+import * as ORE from 'ore-three';
+
 
 export class GlobalManager {
 
@@ -33,9 +33,9 @@ export class GlobalManager {
 
 		this.animator.addEventListener( 'added', ( e ) => {
 
-			let opt = e.variable.userData && e.variable.userData.pane;
+			const opt = e.variable.userData && e.variable.userData.pane;
 
-			let variable = this.animator.dataBase[ e.varName ];
+			const variable = this.animator.dataBase[ e.varName ];
 
 			if ( ! Array.isArray( variable ) && opt ) {
 

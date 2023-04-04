@@ -49,7 +49,7 @@ export class VideoTextureLoader extends THREE.EventDispatcher {
 
 		this.videoElm.play();
 
-		let tex = new THREE.VideoTexture( this.videoElm );
+		const tex = new THREE.VideoTexture( this.videoElm );
 		tex.image.width = tex.image.videoWidth;
 		tex.image.height = tex.image.videoHeight;
 		tex.wrapS = THREE.ClampToEdgeWrapping;
@@ -61,7 +61,7 @@ export class VideoTextureLoader extends THREE.EventDispatcher {
 			tex: tex
 		} );
 
-		let duration = ( this.videoElm.duration - 0.5 );
+		const duration = ( this.videoElm.duration - 0.5 );
 
 		tex.onUpdate = () => {
 
@@ -92,7 +92,7 @@ export class VideoTextureLoader extends THREE.EventDispatcher {
 
 		if ( this.subImgURL ) {
 
-			let loader = new THREE.TextureLoader();
+			const loader = new THREE.TextureLoader();
 			loader.crossOrigin = 'use-credentials';
 
 			loader.load( this.subImgURL, ( tex ) => {

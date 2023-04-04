@@ -21,7 +21,7 @@ export declare interface AssetManagerParams {
 export class AssetManager extends THREE.EventDispatcher {
 
 	private textures: {[key:string]: AssetManagerTexture };
-	private gltfs: {[key:string]: GLTF }
+	private gltfs: {[key:string]: GLTF };
 
 	private preLoadManager: THREE.LoadingManager;
 	private mustLoadManager: THREE.LoadingManager;
@@ -80,15 +80,15 @@ export class AssetManager extends THREE.EventDispatcher {
 
 	private loadAssets( assets: AssetManagerAssetData[], manager: THREE.LoadingManager ) {
 
-		let tex = assets.filter( item => item.type == 'tex' );
-		let videoTex = assets.filter( item => item.type == 'videoTex' );
-		let gltf = assets.filter( item => item.type == 'gltf' );
+		const tex = assets.filter( item => item.type == 'tex' );
+		const videoTex = assets.filter( item => item.type == 'videoTex' );
+		const gltf = assets.filter( item => item.type == 'gltf' );
 
 		/*-------------------------------
 			Load Texture
 		-------------------------------*/
 
-		let texLoader = new THREE.TextureLoader( manager );
+		const texLoader = new THREE.TextureLoader( manager );
 
 		tex.forEach( item => {
 
@@ -112,7 +112,7 @@ export class AssetManager extends THREE.EventDispatcher {
 
 		videoTex.forEach( item => {
 
-			let loader = new VideoTextureLoader( item.path, item.subImgPath );
+			const loader = new VideoTextureLoader( item.path, item.subImgPath );
 
 			loader.addEventListener( 'load', ( e ) => {
 
@@ -132,7 +132,7 @@ export class AssetManager extends THREE.EventDispatcher {
 			Load glTF
 		-------------------------------*/
 
-		let gltfLoader = new GLTFLoader( manager );
+		const gltfLoader = new GLTFLoader( manager );
 
 		gltf.forEach( item => {
 
@@ -154,7 +154,7 @@ export class AssetManager extends THREE.EventDispatcher {
 			Loading Finish
 		-------------------------------*/
 
-		let promise = new Promise( ( resolve ) => {
+		const promise = new Promise( ( resolve ) => {
 
 			manager.onLoad = () => {
 
@@ -186,7 +186,7 @@ export class AssetManager extends THREE.EventDispatcher {
 
 	public getTex( name: string ): AssetManagerTexture {
 
-		let texture = this.textures[ name ];
+		const texture = this.textures[ name ];
 
 		if ( ! texture ) {
 
@@ -202,7 +202,7 @@ export class AssetManager extends THREE.EventDispatcher {
 
 	public getGltf( name: string ): GLTF | undefined {
 
-		let gltf = this.gltfs[ name ];
+		const gltf = this.gltfs[ name ];
 
 		if ( ! gltf ) {
 

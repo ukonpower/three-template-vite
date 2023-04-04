@@ -1,21 +1,21 @@
 import * as THREE from 'three';
-import * as ORE from 'ore-three';
+import { MipmapGeometry } from './MipMapGeometry';
+import bloomBlurFrag from './shaders/bloomBlur.fs';
 
 //bloom shader
-import bloomBlurFrag from './shaders/bloomBlur.fs';
 import bloomBrightFrag from './shaders/bloomBright.fs';
 
 //smaa shaders
-import edgeDetectionVert from './shaders/smaa_edgeDetection.vs';
-import edgeDetectionFrag from './shaders/smaa_edgeDetection.fs';
-import blendingWeightCalculationVert from './shaders/smaa_blendingWeightCalculation.vs';
+import compositeFrag from './shaders/composite.fs';
 import blendingWeightCalculationFrag from './shaders/smaa_blendingWeightCalculation.fs';
-import neiborhoodBlendingVert from './shaders/smaa_neiborhoodBlending.vs';
+import blendingWeightCalculationVert from './shaders/smaa_blendingWeightCalculation.vs';
+import edgeDetectionFrag from './shaders/smaa_edgeDetection.fs';
+import edgeDetectionVert from './shaders/smaa_edgeDetection.vs';
 import neiborhoodBlendingFrag from './shaders/smaa_neiborhoodBlending.fs';
+import neiborhoodBlendingVert from './shaders/smaa_neiborhoodBlending.vs';
 
 //composite shader
-import compositeFrag from './shaders/composite.fs';
-import { MipmapGeometry } from './MipMapGeometry';
+import * as ORE from 'ore-three';
 
 export type PPParam = {
 	bloomBrightness?: number,
@@ -127,12 +127,12 @@ export class RenderPipeline {
 			PostProcessing
 		------------------------*/
 
-		let areaImg = new Image();
+		const areaImg = new Image();
 		areaImg.src = this.getAreaTexture();
 
 		areaImg.onload = () => {
 
-			let tex = new THREE.Texture( areaImg );
+			const tex = new THREE.Texture( areaImg );
 			tex.minFilter = THREE.LinearFilter;
 			tex.generateMipmaps = false;
 			tex.format = THREE.RGBAFormat;
@@ -143,11 +143,11 @@ export class RenderPipeline {
 
 		};
 
-		let searchImg = new Image();
+		const searchImg = new Image();
 		searchImg.src = this.getSearchTexture();
 		searchImg.onload = () => {
 
-			let tex = new THREE.Texture( searchImg );
+			const tex = new THREE.Texture( searchImg );
 			tex.minFilter = THREE.NearestFilter;
 			tex.magFilter = THREE.NearestFilter;
 			tex.generateMipmaps = false;
@@ -181,7 +181,7 @@ export class RenderPipeline {
 			} ),
 		}, new MipmapGeometry( this.bloomRenderCount ) );
 
-		let gaussWeightNum = 5;
+		const gaussWeightNum = 5;
 
 		this.bloomBlurPP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: bloomBlurFrag,
@@ -203,14 +203,14 @@ export class RenderPipeline {
 				uWeights: {
 					value: ( ()=>{
 
-						let weight = new Array( gaussWeightNum );
+						const weight = new Array( gaussWeightNum );
 
 						// https://wgld.org/d/webgl/w057.html
 						let t = 0.0;
-						let d = 100;
+						const d = 100;
 						for ( let i = 0; i < weight.length; i ++ ) {
 
-							let r = 1.0 + 2.0 * i;
+							const r = 1.0 + 2.0 * i;
 							let w = Math.exp( - 0.5 * ( r * r ) / d );
 							weight[ i ] = w;
 
@@ -245,7 +245,7 @@ export class RenderPipeline {
 			SMAA
 		------------------------*/
 
-		let defines = {
+		const defines = {
 			"mad(a, b, c)": "(a * b + c)",
 			"SMAA_THRESHOLD": "0.1",
 			"SMAA_LOCAL_CONTRAST_ADAPTATION_FACTOR": "2.0",
@@ -299,7 +299,7 @@ export class RenderPipeline {
 		/*------------------------
 			Composite
 		------------------------*/
-		let compo = compositeFrag.replace( /RENDER_COUNT/g, this.bloomRenderCount.toString() );
+		const compo = compositeFrag.replace( /RENDER_COUNT/g, this.bloomRenderCount.toString() );
 
 		this.compositePP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: compo,
@@ -339,7 +339,7 @@ export class RenderPipeline {
 		/*------------------------
 			Scene
 		------------------------*/
-		let renderTargetMem = this.renderer.getRenderTarget();
+		const renderTargetMem = this.renderer.getRenderTarget();
 
 		this.renderer.setRenderTarget( this.renderTargets.rt1 );
 		this.renderer.render( scene, camera );
@@ -355,7 +355,7 @@ export class RenderPipeline {
 			sceneTex: this.renderTargets.rt1.texture
 		}, this.renderTargets.bloomRT1 );
 
-		let uni = this.bloomBlurPP.effect.material.uniforms;
+		const uni = this.bloomBlurPP.effect.material.uniforms;
 
 		uni.direction.value = false;
 		uni.backbuffer.value = this.renderTargets.bloomRT1.texture;
@@ -411,7 +411,7 @@ export class RenderPipeline {
 		/*------------------------
 			Composite
 		------------------------*/
-		let compositeInputRenderTargets = {
+		const compositeInputRenderTargets = {
 			uSceneTex: this.renderTargets.rt2.texture,
 			uBloomTex: this.renderTargets.bloomRT1.texture
 		};
@@ -424,7 +424,7 @@ export class RenderPipeline {
 
 	public resize( layerInfo: ORE.LayerInfo ) {
 
-		let pixelWindowSize = layerInfo.size.canvasPixelSize;
+		const pixelWindowSize = layerInfo.size.canvasPixelSize;
 
 		this.smaaCommonUni.SMAA_RT_METRICS.value.set( 1 / pixelWindowSize.x, 1 / pixelWindowSize.y, pixelWindowSize.x, pixelWindowSize.y );
 
@@ -432,7 +432,7 @@ export class RenderPipeline {
 		this.renderTargets.rt2.setSize( pixelWindowSize.x, pixelWindowSize.y );
 		this.renderTargets.rt3.setSize( pixelWindowSize.x, pixelWindowSize.y );
 
-		let bloomRTSize = new THREE.Vector2( pixelWindowSize.x, pixelWindowSize.y );
+		const bloomRTSize = new THREE.Vector2( pixelWindowSize.x, pixelWindowSize.y );
 
 		this.renderTargets.bloomRT1.setSize( bloomRTSize.x, bloomRTSize.y );
 		this.renderTargets.bloomRT2.setSize( bloomRTSize.x, bloomRTSize.y );

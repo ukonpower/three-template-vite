@@ -1,9 +1,9 @@
-import * as ORE from 'ore-three';
-import { GlobalManager } from './GlobalManager';
-import { RenderPipeline } from './RenderPipeline';
 import { CameraController } from './CameraController';
+import { GlobalManager } from './GlobalManager';
 import { AssetManager } from './GlobalManager/AssetManager';
+import { RenderPipeline } from './RenderPipeline';
 import { World } from './World';
+import * as ORE from 'ore-three';
 export class MainScene extends ORE.BaseLayer {
 
 	private gManager: GlobalManager;
@@ -32,7 +32,7 @@ export class MainScene extends ORE.BaseLayer {
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {
 
-			let gltf = ( e.target as AssetManager ).getGltf( 'scene' );
+			const gltf = ( e.target as AssetManager ).getGltf( 'scene' );
 
 			if ( gltf ) {
 

@@ -42,7 +42,7 @@ export class EasyRaycaster extends THREE.EventDispatcher {
 
 		this.raycaster.setFromCamera( cursor, camera );
 
-		let intersection = this.raycaster.intersectObjects( objects );
+		const intersection = this.raycaster.intersectObjects( objects );
 
 		for ( let i = 0; i < intersection.length; i ++ ) {
 
@@ -56,7 +56,7 @@ export class EasyRaycaster extends THREE.EventDispatcher {
 
 	public update( cursor: THREE.Vector2, camera: THREE.Camera ) {
 
-		let intersection = this.getIntersection( cursor, camera, this.touchableObjects );
+		const intersection = this.getIntersection( cursor, camera, this.touchableObjects );
 
 		if ( intersection ) {
 
@@ -107,7 +107,7 @@ export class EasyRaycaster extends THREE.EventDispatcher {
 
 	public touchStart( cursor: THREE.Vector2, camera: THREE.Camera ) {
 
-		let intersection = this.getIntersection( cursor, camera, this.touchableObjects );
+		const intersection = this.getIntersection( cursor, camera, this.touchableObjects );
 
 		if ( intersection ) {
 
@@ -120,11 +120,11 @@ export class EasyRaycaster extends THREE.EventDispatcher {
 
 	public touchEnd( cursor: THREE.Vector2, camera: THREE.Camera ) {
 
-		let intersection = this.getIntersection( cursor, camera, this.touchableObjects );
+		const intersection = this.getIntersection( cursor, camera, this.touchableObjects );
 
 		if ( intersection && this.touchStartObj ) {
 
-			let diff = new Date().getTime() - this.clickStart;
+			const diff = new Date().getTime() - this.clickStart;
 
 			if ( 'isObject3D' in this.touchStartObj ) {
 
