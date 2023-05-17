@@ -56,7 +56,7 @@ export class RenderPipeline {
 
 	constructor( renderer: THREE.WebGLRenderer, parentUniforms?: ORE.Uniforms ) {
 
-		this.animator = window.gManager.animator;
+		this.animator = window.glCanvas.gManager.animator;
 		this.renderer = renderer;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( {
@@ -167,7 +167,7 @@ export class RenderPipeline {
 		this.bloomBrightPP = new ORE.PostProcessing( this.renderer, {
 			fragmentShader: bloomBrightFrag,
 			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
-				threshold: window.gManager.animator.add( {
+				threshold: window.glCanvas.gManager.animator.add( {
 					name: 'bloomThreshold',
 					initValue: 0.7,
 					easing: ORE.Easings.easeOutCubic,
@@ -189,9 +189,9 @@ export class RenderPipeline {
 				backbuffer: {
 					value: null
 				},
-				blurRange: window.gManager.animator.add( {
+				blurRange: window.glCanvas.gManager.animator.add( {
 					name: 'bloomBlurRange',
-					initValue: 1,
+					initValue: 3,
 					easing: ORE.Easings.easeOutCubic,
 					userData: {
 						pane: {
@@ -306,7 +306,7 @@ export class RenderPipeline {
 			uniforms: ORE.UniformsLib.mergeUniforms( {
 				uBrightness: this.animator.add( {
 					name: 'bloomBrightness',
-					initValue: 2.0,
+					initValue: 1.5,
 					easing: ORE.Easings.easeOutCubic,
 					userData: {
 						pane: {

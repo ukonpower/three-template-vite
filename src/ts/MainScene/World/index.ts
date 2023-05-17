@@ -1,23 +1,35 @@
 import * as THREE from 'three';
 import * as ORE from 'ore-three';
+import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { Carpenter } from './Carpenter';
 
 export class World extends THREE.Object3D {
 
-	private scene: THREE.Scene;
+	private gltf?: GLTF;
+
+	private carpenter: Carpenter;
+
+	private camera: THREE.Camera;
 	private commonUniforms: ORE.Uniforms;
 
-	constructor( scene: THREE.Scene, parentUniforms: ORE.Uniforms ) {
+	constructor( camera: THREE.Camera, parentUniforms: ORE.Uniforms ) {
 
 		super();
 
-		this.scene = scene;
+		this.camera = camera;
 
 		this.commonUniforms = ORE.UniformsLib.mergeUniforms( parentUniforms, {
 		} );
 
-		const light = new THREE.DirectionalLight();
-		light.position.set( 1, 2, 1 );
-		this.scene.add( light );
+		this.carpenter = new Carpenter( this, this.camera, this.commonUniforms );
+
+	}
+
+	public setGltf( gltf: GLTF ) {
+
+		this.gltf = gltf;
+
+		this.carpenter.setGltf( this.gltf );
 
 	}
 

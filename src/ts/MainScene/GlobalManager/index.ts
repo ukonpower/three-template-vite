@@ -2,11 +2,13 @@ import { Pane } from 'tweakpane';
 import { AssetManager } from './AssetManager';
 import { EasyRaycaster } from './EasyRaycaster';
 import * as ORE from 'ore-three';
+import { BLidge, BLidge } from '../BLidge';
 
 
 export class GlobalManager {
 
 	public eRay: EasyRaycaster;
+	public blidge: BLidge;
 	public assetManager: AssetManager;
 	public animator: ORE.Animator;
 
@@ -14,11 +16,13 @@ export class GlobalManager {
 
 	constructor( ) {
 
-		window.gManager = this;
+		window.glCanvas.gManager = this;
 
 		this.eRay = new EasyRaycaster();
 
 		this.assetManager = new AssetManager();
+
+		this.blidge = new BLidge();
 
 		/*-------------------------------
 			Animator

@@ -1,6 +1,5 @@
-import { CameraController } from './CameraController';
+import { GLTF, GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { GlobalManager } from './GlobalManager';
-import { AssetManager } from './GlobalManager/AssetManager';
 import { RenderPipeline } from './RenderPipeline';
 import { World } from './World';
 import * as ORE from 'ore-three';
@@ -9,7 +8,7 @@ export class MainScene extends ORE.BaseLayer {
 	private gManager: GlobalManager;
 	private renderPipeline: RenderPipeline;
 
-	private cameraController?: CameraController;
+	private gltf?: GLTF;
 	private world?: World;
 
 	constructor( param: ORE.LayerParam ) {
@@ -22,32 +21,46 @@ export class MainScene extends ORE.BaseLayer {
 			Gmanager
 		-------------------------------*/
 
+		let gltfPath = '/assets/scene/scene.glb';
+
 		this.gManager = new GlobalManager();
 
 		this.gManager.assetManager.load( {
 			assets: [
-				{ name: 'scene', path: '/assets/scene/scene.glb', type: 'gltf' }
+				{ name: 'scene', path: gltfPath, type: 'gltf' }
 			]
 		} );
 
 		this.gManager.assetManager.addEventListener( 'loadMustAssets', ( e ) => {
 
-			const gltf = ( e.target as AssetManager ).getGltf( 'scene' );
-
-			if ( gltf ) {
-
-				this.scene.add( gltf.scene );
-
-			}
+			this.gltf = this.gManager.assetManager.getGltf( "scene" );
 
 			this.initScene();
 			this.onResize();
 
 		} );
 
+		this.gManager.blidge.on( "export_gltf", () => {
+
+			new GLTFLoader().load( gltfPath, ( gltf ) => {
+
+				this.gltf = gltf;
+
+				if ( this.world ) {
+
+					this.world.setGltf( this.gltf );
+
+				}
+
+			} );
+
+		} );
+
 		/*-------------------------------
 			RenderPipeline
 		-------------------------------*/
+
+		this.renderer.shadowMap.enabled = true;
 
 		this.renderPipeline = new RenderPipeline( this.renderer, this.commonUniforms );
 
@@ -68,16 +81,17 @@ export class MainScene extends ORE.BaseLayer {
 	private initScene() {
 
 		/*-------------------------------
-			CameraController
-		-------------------------------*/
-
-		this.cameraController = new CameraController( this.camera, this.scene.getObjectByName( 'CameraData' ) );
-
-		/*-------------------------------
 			World
 		-------------------------------*/
 
-		this.world = new World( this.scene, this.commonUniforms );
+		this.world = new World( this.camera, this.commonUniforms );
+
+		if ( this.gltf ) {
+
+			this.world.setGltf( this.gltf );
+
+		}
+
 		this.scene.add( this.world );
 
 	}
@@ -87,12 +101,6 @@ export class MainScene extends ORE.BaseLayer {
 		if ( this.gManager ) {
 
 			this.gManager.update( deltaTime );
-
-		}
-
-		if ( this.cameraController ) {
-
-			this.cameraController.update( deltaTime );
 
 		}
 
@@ -110,12 +118,6 @@ export class MainScene extends ORE.BaseLayer {
 
 		super.onResize();
 
-		if ( this.cameraController ) {
-
-			this.cameraController.resize( this.info );
-
-		}
-
 		if ( this.world ) {
 
 			this.world.resize( this.info );
@@ -127,13 +129,6 @@ export class MainScene extends ORE.BaseLayer {
 	}
 
 	public onHover( args: ORE.TouchEventArgs ) {
-
-		if ( this.cameraController ) {
-
-			this.cameraController.updateCursor( args.screenPosition );
-
-		}
-
 	}
 
 	public onTouchStart( args: ORE.TouchEventArgs ) {

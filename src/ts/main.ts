@@ -6,11 +6,12 @@ import { AssetManager } from './MainScene/GlobalManager/AssetManager';
 
 declare global {
 	interface Window {
-		gManager: GlobalManager;
-		assetManager: AssetManager;
-		isIE: boolean;
-		isSP: boolean;
-		mainScene: MainScene;
+		glCanvas: {
+			gManager: GlobalManager;
+			assetManager: AssetManager;
+			isSP: boolean;
+			mainScene: MainScene;
+		}
 	}
 }
 
@@ -26,9 +27,11 @@ class APP {
 			checkUA
 		------------------------*/
 
+		window.glCanvas = {} as any;
+
 		var ua = navigator.userAgent;
-		window.isSP = ( ua.indexOf( 'iPhone' ) > 0 || ua.indexOf( 'iPod' ) > 0 || ua.indexOf( 'Android' ) > 0 && ua.indexOf( 'Mobile' ) > 0 || ua.indexOf( 'iPad' ) > 0 || ua.indexOf( 'Android' ) > 0 || ua.indexOf( 'macintosh' ) > 0 );
-		window.isSP = window.isSP || navigator.platform == "iPad" || ( navigator.platform == "MacIntel" && navigator.userAgent.indexOf( "Safari" ) != - 1 && navigator.userAgent.indexOf( "Chrome" ) == - 1 && ( navigator as any ).standalone !== undefined );
+		window.glCanvas.isSP = ( ua.indexOf( 'iPhone' ) > 0 || ua.indexOf( 'iPod' ) > 0 || ua.indexOf( 'Android' ) > 0 && ua.indexOf( 'Mobile' ) > 0 || ua.indexOf( 'iPad' ) > 0 || ua.indexOf( 'Android' ) > 0 || ua.indexOf( 'macintosh' ) > 0 );
+		window.glCanvas.isSP = window.glCanvas.isSP || navigator.platform == "iPad" || ( navigator.platform == "MacIntel" && navigator.userAgent.indexOf( "Safari" ) != - 1 && navigator.userAgent.indexOf( "Chrome" ) == - 1 && ( navigator as any ).standalone !== undefined );
 
 		/*------------------------
 			init ORE
