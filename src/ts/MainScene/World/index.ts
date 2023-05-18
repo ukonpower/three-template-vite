@@ -2,8 +2,13 @@ import * as THREE from 'three';
 import * as ORE from 'ore-three';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 import { Carpenter } from './Carpenter';
+import { BLidger } from '../BLidge/BLidger';
+import { BLidge } from '../BLidge';
+import { Components } from './Components';
 
 export class World extends THREE.Object3D {
+
+	private blidge: BLidge;
 
 	private gltf?: GLTF;
 
@@ -15,6 +20,8 @@ export class World extends THREE.Object3D {
 	constructor( camera: THREE.Camera, parentUniforms: ORE.Uniforms ) {
 
 		super();
+
+		this.blidge = window.glCanvas.gManager.blidge;
 
 		this.camera = camera;
 
@@ -34,6 +41,17 @@ export class World extends THREE.Object3D {
 	}
 
 	public update( deltaTime: number ) {
+
+		let blidgeRoot = this.carpenter.blidgeRoot;
+
+		if ( blidgeRoot && blidgeRoot.userData.components ) {
+
+			let components = blidgeRoot.userData.components as Components;
+
+			components.update( {} );
+
+		}
+
 	}
 
 	public resize( info: ORE.LayerInfo ) {

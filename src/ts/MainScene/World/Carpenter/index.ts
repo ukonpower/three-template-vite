@@ -3,10 +3,10 @@ import * as ORE from 'ore-three';
 import * as GLP from 'glpower';
 
 import { BLidge, BLidgeNode } from '../../BLidge';
-import { BLidger } from '../../BLidge/BLidger';
 import SceneData from './scene/scene.json';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Factory } from '../Entities/Factory';
+import { ComponentFactory } from '../Components/Factory';
+import { Components } from '../Components';
 
 export class Carpenter extends GLP.EventEmitter {
 
@@ -16,7 +16,7 @@ export class Carpenter extends GLP.EventEmitter {
 	private camera: THREE.Camera;
 	private gltf?: GLTF;
 
-	private blidgeRoot: THREE.Object3D | null;
+	public blidgeRoot: THREE.Object3D | null;
 	private entities: Map<string, THREE.Object3D>;
 
 	// frame
@@ -26,7 +26,7 @@ export class Carpenter extends GLP.EventEmitter {
 
 	// factory
 
-	private factory: Factory;
+	private compFactory: ComponentFactory;
 
 	constructor( root: THREE.Object3D, camera: THREE.Camera, parentUniforms: ORE.Uniforms, gltf?: GLTF ) {
 
@@ -45,10 +45,6 @@ export class Carpenter extends GLP.EventEmitter {
 		this.playing = false;
 		this.playTime = 0;
 
-		// factory
-
-		this.factory = new Factory( parentUniforms );
-
 		// blidge
 
 		this.blidgeRoot = null;
@@ -57,6 +53,10 @@ export class Carpenter extends GLP.EventEmitter {
 
 		this.blidge.on( 'sync/timeline', ( frame: GLP.BLidgeSceneFrame ) => {
 		} );
+
+		// factory
+
+		this.compFactory = new ComponentFactory( parentUniforms );
 
 		if ( process.env.NODE_ENV == "development" ) {
 
@@ -96,18 +96,11 @@ export class Carpenter extends GLP.EventEmitter {
 
 			const obj: THREE.Object3D = node.type == 'camera' ? this.camera : ( this.entities.get( node.name ) || ( this.gltf && this.gltf.scene.getObjectByName( gltfName ) ) || new THREE.Object3D() );
 
-			if ( obj ) {
+			// components
 
-				const blidger = obj.userData.blidger;
+			this.compFactory.router( obj, node );
 
-				if ( blidger && node.type != blidger.node.type ) {
-				}
-
-			}
-
-			obj.userData.blidger = new BLidger( obj, node );
-
-			obj.userData.entity = this.factory.router( obj, node );
+			// children
 
 			node.children.forEach( c => {
 
@@ -146,6 +139,15 @@ export class Carpenter extends GLP.EventEmitter {
 		this.entities.forEach( item => {
 
 			if ( item.userData.updateTime != timeStamp ) {
+
+				let components = item.userData.components as Components;
+
+				if ( components ) {
+
+					components.disposeAll();
+					components.clear();
+
+				}
 
 				const parent = item.parent;
 
