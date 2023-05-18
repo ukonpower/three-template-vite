@@ -29,6 +29,7 @@ export default defineConfig( {
 		host: "0.0.0.0",
 	},
 	build: {
+		outDir: '../public/',
 		rollupOptions: {
 			input,
 			output: {

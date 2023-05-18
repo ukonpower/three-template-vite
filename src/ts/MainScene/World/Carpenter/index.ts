@@ -45,6 +45,10 @@ export class Carpenter extends GLP.EventEmitter {
 		this.playing = false;
 		this.playTime = 0;
 
+		// factory
+
+		this.factory = new Factory( parentUniforms );
+
 		// blidge
 
 		this.blidgeRoot = null;
@@ -69,10 +73,6 @@ export class Carpenter extends GLP.EventEmitter {
 			this.blidge.loadScene( SceneData as any );
 
 		}
-
-		// factory
-
-		this.factory = new Factory( parentUniforms );
 
 	}
 
