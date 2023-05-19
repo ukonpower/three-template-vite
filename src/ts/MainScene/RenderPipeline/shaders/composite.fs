@@ -1,6 +1,6 @@
 uniform sampler2D sampler0;
+uniform sampler2D sampler1; // depth
 uniform sampler2D uBloomTexture[4];
-
 uniform float cameraNear;
 uniform float cameraFar;
 
@@ -39,6 +39,8 @@ void main( void ) {
 	#pragma unroll_loop_end
 
 	col *= smoothstep( 0.9, 0.3, len );
+
+	col = texture( sampler1, vUv ).xyz;
 
 	outColor = vec4( col, 1.0 );
 

@@ -1,15 +1,8 @@
 import * as THREE from 'three';
-import { MipmapGeometry } from './MipMapGeometry';
 
 import fxaaFrag from './shaders/fxaa.fs';
 import bloomBlurFrag from './shaders/bloomBlur.fs';
 import bloomBrightFrag from './shaders/bloomBright.fs';
-import lightShaftFrag from './shaders/lightShaft.fs';
-import ssrFrag from './shaders/ssr.fs';
-import dofCoc from './shaders/dofCoc.fs';
-import dofComposite from './shaders/dofComposite.fs';
-import dofBokeh from './shaders/dofBokeh.fs';
-import ssCompositeFrag from './shaders/ssComposite.fs';
 import compositeFrag from './shaders/composite.fs';
 
 //composite shader
