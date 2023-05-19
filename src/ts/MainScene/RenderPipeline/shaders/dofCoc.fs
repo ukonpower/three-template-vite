@@ -1,8 +1,10 @@
+#pragma glslify: import('./constants.glsl' )
+
 uniform sampler2D sampler0;
 uniform sampler2D sampler1;
 uniform vec4 uParams;
 uniform float uTime;
-uniform mat4 projectionMatrixInverse;
+uniform mat4 pProjectionMatrixInverse;
 
 in vec2 vUv;
 
@@ -10,7 +12,7 @@ layout (location = 0) out vec4 outColor;
 
 float sampleDepth( sampler2D depthTex, vec2 uv ) {
 
-	vec4 depth = projectionMatrixInverse * vec4( uv * 2.0 - 1.0, texture( depthTex, uv ).x * 2.0 - 1.0, 1.0 );
+	vec4 depth = pProjectionMatrixInverse * vec4( uv * 2.0 - 1.0, texture( depthTex, uv ).x * 2.0 - 1.0, 1.0 );
 	depth.xyz /= depth.w * -1.0;
 	
 	return depth.z;

@@ -110,7 +110,14 @@ export class BLidger extends Component {
 		let frame = this.blidge.frame.current;
 
 		this.curvePosition && target.position.copy( this.curvePosition.setFrame( frame ).value as unknown as THREE.Vector3 );
-		this.curveRotation && target.rotation.setFromVector3( this.curveRotation.setFrame( frame ).value as unknown as THREE.Vector3 );
+
+		if ( this.curveRotation ) {
+
+			let rot = this.curveRotation.setFrame( frame ).value;
+			target.rotation.set( rot.x + this.rotOffsetX, rot.y, rot.z );
+
+		}
+
 		this.curveScale && target.scale.copy( this.curveScale.setFrame( frame ).value as unknown as THREE.Vector3 );
 
 		this.emit( "update", [ event ] );

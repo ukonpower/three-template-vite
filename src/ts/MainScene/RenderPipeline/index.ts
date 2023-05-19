@@ -3,6 +3,9 @@ import * as THREE from 'three';
 import fxaaFrag from './shaders/fxaa.fs';
 import bloomBlurFrag from './shaders/bloomBlur.fs';
 import bloomBrightFrag from './shaders/bloomBright.fs';
+import dofCoc from './shaders/dofCoc.fs';
+import dofComposite from './shaders/dofComposite.fs';
+import dofBokeh from './shaders/dofBokeh.fs';
 import compositeFrag from './shaders/composite.fs';
 
 //composite shader
@@ -21,6 +24,8 @@ export class RenderPipeline {
 
 	private postProcess: ORE.PostProcess;
 
+	private depthTexture: THREE.DepthTexture;
+
 	private rt1: THREE.WebGLRenderTarget;
 	private rt2: THREE.WebGLRenderTarget;
 	private rt3: THREE.WebGLRenderTarget;
@@ -37,12 +42,13 @@ export class RenderPipeline {
 	private resolutionInv :THREE.Vector2
 	private resolutionBloom :THREE.Vector2[]
 
-	// public dofCoc: ORE.PostProcessPass;
-	// public dofBokeh: ORE.PostProcessPass;
-	// public dofComposite: ORE.PostProcessPass;
-	// public rtDofCoc: THREE.WebGLRenderTarget;
-	// public rtDofBokeh: THREE.WebGLRenderTarget;
-	// public rtDofComposite: THREE.WebGLRenderTarget;
+	private dofParams: THREE.Vector4;
+	public dofCoc: ORE.PostProcessPass;
+	public dofBokeh: ORE.PostProcessPass;
+	public dofComposite: ORE.PostProcessPass;
+	public rtDofCoc: THREE.WebGLRenderTarget;
+	public rtDofBokeh: THREE.WebGLRenderTarget;
+	public rtDofComposite: THREE.WebGLRenderTarget;
 
 	private composite: ORE.PostProcessPass;
 
@@ -58,7 +64,9 @@ export class RenderPipeline {
 
 		// rt
 
-		this.rt1 = new THREE.WebGLRenderTarget( 1, 1 );
+		this.depthTexture = new THREE.DepthTexture( 1, 1 );
+
+		this.rt1 = new THREE.WebGLRenderTarget( 1, 1, { depthTexture: this.depthTexture } );
 		this.rt2 = new THREE.WebGLRenderTarget( 1, 1 );
 		this.rt3 = new THREE.WebGLRenderTarget( 1, 1 );
 
@@ -73,10 +81,47 @@ export class RenderPipeline {
 			}
 		} );
 
+		// dof
+
+		this.rtDofCoc = new THREE.WebGLRenderTarget( 1, 1, { type: THREE.FloatType } );
+		this.rtDofBokeh = new THREE.WebGLRenderTarget( 1, 1 );
+		this.rtDofComposite = new THREE.WebGLRenderTarget( 1, 1 );
+
+		this.dofParams = new THREE.Vector4();
+
+		this.dofCoc = new ORE.PostProcessPass( {
+			input: [ this.rt1.texture, this.depthTexture ],
+			fragmentShader: dofCoc,
+			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+				uParams: {
+					value: this.dofParams,
+				},
+			} ),
+			renderTarget: this.rtDofCoc,
+		} );
+
+		this.dofBokeh = new ORE.PostProcessPass( {
+			input: [ this.rtDofCoc.texture ],
+			fragmentShader: dofBokeh,
+			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
+				uParams: {
+					value: this.dofParams,
+				}
+			} ),
+			renderTarget: this.rtDofBokeh
+		} );
+
+		this.dofComposite = new ORE.PostProcessPass( {
+			input: [ this.rt1.texture, this.rtDofBokeh.texture ],
+			fragmentShader: dofComposite,
+			uniforms: ORE.UniformsLib.mergeUniforms( {} ),
+			renderTarget: this.rtDofComposite
+		} );
+
 		// fxaa
 
 		this.fxaa = new ORE.PostProcessPass( {
-			input: [ this.rt1.texture ],
+			input: [ this.rtDofComposite.texture ],
 			fragmentShader: fxaaFrag,
 			uniforms: this.commonUniforms,
 			renderTarget: this.rt2
@@ -184,6 +229,9 @@ export class RenderPipeline {
 		this.postProcess = new ORE.PostProcess( {
 			renderer: this.renderer,
 			passes: [
+				this.dofCoc,
+				this.dofBokeh,
+				this.dofComposite,
 				this.fxaa,
 				this.bloomBright,
 				...this.bloomBlur,
@@ -230,12 +278,30 @@ export class RenderPipeline {
 
 	public render( scene: THREE.Scene, camera: THREE.Camera ) {
 
+		// dof
+
+		let fov = ( camera as THREE.PerspectiveCamera ).isPerspectiveCamera ? ( camera as THREE.PerspectiveCamera ).fov : 50.0;
+
+		const focusDistance = camera.position.length();
+		const kFilmHeight = 0.036;
+		const flocalLength = 0.5 * kFilmHeight / Math.tan( 0.5 * ( fov * THREE.MathUtils.DEG2RAD ) );
+
+		const maxCoc = 1 / this.rtDofBokeh.height * 6.0;
+		const rcpMaxCoC = 1.0 / maxCoc;
+
+		const coeff = flocalLength * flocalLength / ( 1.4 * ( focusDistance - flocalLength ) * kFilmHeight * 2 ) * 1.5;
+
+		this.dofParams.set( focusDistance, maxCoc, rcpMaxCoC, coeff );
+
+		// render
+
 		let rt = this.renderer.getRenderTarget();
 
 		this.renderer.setRenderTarget( this.rt1 );
+
 		this.renderer.render( scene, camera );
 
-		this.postProcess.render();
+		this.postProcess.render( { camera } );
 
 		this.renderer.setRenderTarget( rt );
 
@@ -267,15 +333,15 @@ export class RenderPipeline {
 
 		}
 
+		this.rtDofCoc.setSize( resolutionHalf.x, resolutionHalf.y );
+		this.rtDofBokeh.setSize( resolutionHalf.x, resolutionHalf.y );
+		this.rtDofComposite.setSize( this.resolution.x, this.resolution.y );
+
 		// this.rtLightShaft1.setSize( this.resolution );
 		// this.rtLightShaft2.setSize( this.resolution );
 
 		// this.rtSSR1.setSize( resolutionHalf );
 		// this.rtSSR2.setSize( resolutionHalf );
-
-		// this.rtDofCoc.setSize( resolutionHalf );
-		// this.rtDofBokeh.setSize( resolutionHalf );
-		// this.rtDofComposite.setSize( resolution );
 
 
 	}

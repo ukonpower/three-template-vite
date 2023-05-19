@@ -1,3 +1,5 @@
+#pragma glslify: import('./constants.glsl' )
+
 uniform float uTime;
 uniform sampler2D sampler0;
 uniform sampler2D sampler1;
