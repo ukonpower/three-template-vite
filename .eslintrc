@@ -12,5 +12,8 @@
 		"project": "./tsconfig.json"
 	},
 	"rules": {
+	},
+	"globals": {
+		"BASE_PATH": "readonly"
 	}
 }

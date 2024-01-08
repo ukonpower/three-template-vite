@@ -6,6 +6,8 @@ const pageList = [
 	{ name: 'index', path: '/' },
 ];
 
+const basePath = process.env.GITHUB_PAGES ? '/three-template-vite' : '';
+
 const input = {
 	...( () => {
 
@@ -24,6 +26,8 @@ const input = {
 
 export default defineConfig( {
 	root: 'src',
+	publicDir: 'public',
+	base: basePath,
 	server: {
 		port: 3000,
 		host: "0.0.0.0",
@@ -54,5 +58,8 @@ export default defineConfig( {
 			} ),
 			enforce: 'pre'
 		}
-	]
+	],
+	define: {
+		BASE_PATH: `"${basePath}"`
+	}
 } );

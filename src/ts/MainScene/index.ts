@@ -21,7 +21,7 @@ export class MainScene extends ORE.BaseLayer {
 			Gmanager
 		-------------------------------*/
 
-		let gltfPath = '/assets/scene/scene.glb';
+		let gltfPath = BASE_PATH + '/assets/scene/scene.glb';
 
 		this.gManager = new GlobalManager();
 
