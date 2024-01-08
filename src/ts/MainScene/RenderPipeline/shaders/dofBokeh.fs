@@ -1,8 +1,7 @@
 #pragma glslify: import('./constants.glsl' )
 
 uniform float uTime;
-uniform sampler2D sampler0;
-uniform sampler2D sampler1;
+uniform sampler2D uCocTex;
 uniform vec4 uParams;
 
 in vec2 vUv;
@@ -64,11 +63,11 @@ void main( void ) {
 
 	float _MaxCoC = uParams.y;
 	float _RcpMaxCoC = uParams.z;
-	vec2 _MainTex_TexelSize = vec2( 1.0 ) / vec2( textureSize( sampler0, 0 ) );
+	vec2 _MainTex_TexelSize = vec2( 1.0 ) / vec2( textureSize( uCocTex, 0 ) );
 	float _RcpAspect = _MainTex_TexelSize.x / _MainTex_TexelSize.y;
-	// sampler2D _MainTex = sampler0;
+	// sampler2D _MainTex = uCocTex;
 
-    vec4 samp0 = texture(sampler0, vUv);
+    vec4 samp0 = texture(uCocTex, vUv);
 
     vec4 bgAcc = vec4(0.0); // Background: far field bokeh
     vec4 fgAcc = vec4(0.0); // Foreground: near field bokeh
@@ -79,7 +78,7 @@ void main( void ) {
         float dist = length(disp);
 
         vec2 duv = vec2(disp.x * _RcpAspect, disp.y);
-        vec4 samp = texture(sampler0, vUv + duv);
+        vec4 samp = texture(uCocTex, vUv + duv);
 
         // BG: Compare CoC of the current sample and the center sample
         // and select smaller one.

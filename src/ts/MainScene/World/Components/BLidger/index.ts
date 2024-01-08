@@ -60,7 +60,7 @@ export class BLidger extends Component {
 		this.curveScale = this.blidge.getCurveGroup( this.node.animation.scale );
 		this.curveHide = this.blidge.getCurveGroup( this.node.animation.hide );
 
-		// sorezore
+		// type
 
 		if ( this.node.type == 'camera' ) {
 
@@ -75,7 +75,6 @@ export class BLidger extends Component {
 
 			}
 
-
 		} else if ( this.node.type == 'light' ) {
 
 			let light = target as THREE.Light;
@@ -86,6 +85,7 @@ export class BLidger extends Component {
 				if ( param.type == "spot" ) {
 
 					let spot = light as THREE.SpotLight;
+
 
 					if ( spot.isSpotLight ) {
 

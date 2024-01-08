@@ -1,5 +1,5 @@
-import { IVector3, IVector2, FCurveGroup, Vector, EventEmitter } from "glpower";
-import { FCurve, FCurveKeyFrame, FCurveInterpolation } from "ore-three";
+import { IVector3, IVector2, FCurveGroup, FCurve, FCurveKeyFrame, EventEmitter } from "glpower";
+import { FCurveInterpolation } from "ore-three";
 
 export type BLidgeNodeType = 'empty' | 'cube' | 'sphere' | 'cylinder' | 'mesh' | 'camera' | 'plane' | 'light';
 
@@ -20,9 +20,9 @@ export type BLidgeNodeParam = {
 	parent: string,
 	children?: BLidgeNodeParam[],
 	animation?: BLidgeAnimationAccessor,
-	position: IVector3,
-	rotation: IVector3,
-	scale: IVector3,
+	position: number[],
+	rotation: number[],
+	scale: number[],
 	material?: {
 		name?: string,
 		uniforms?: BLidgeAnimationAccessor
@@ -287,9 +287,21 @@ export class BLidge extends EventEmitter {
 				parent: nodeParam.parent,
 				children: [],
 				animation: nodeParam.animation || {},
-				position: nodeParam.position || new Vector(),
-				rotation: nodeParam.rotation || new Vector(),
-				scale: nodeParam.scale || new Vector(),
+				position: {
+					x: nodeParam.position[ 0 ] || 0,
+					y: nodeParam.position[ 1 ] || 0,
+					z: nodeParam.position[ 2 ] || 0
+				},
+				rotation: {
+					x: nodeParam.rotation[ 0 ] || 0,
+					y: nodeParam.rotation[ 1 ] || 0,
+					z: nodeParam.rotation[ 2 ] || 0
+				},
+				scale: {
+					x: nodeParam.scale[ 0 ] || 1,
+					y: nodeParam.scale[ 1 ] || 1,
+					z: nodeParam.scale[ 2 ] || 1
+				},
 				material: mat,
 				type: nodeParam.type,
 				visible: nodeParam.visible,

@@ -1,5 +1,5 @@
-uniform sampler2D sampler0;
-uniform sampler2D sampler1; // depth
+uniform sampler2D uBackBuffer;
+// uniform sampler2D sampler1; // depth
 uniform sampler2D uBloomTexture[4];
 uniform float cameraNear;
 uniform float cameraFar;
@@ -28,7 +28,7 @@ void main( void ) {
 	vec2 cuv = uv - 0.5;
 	float len = length(cuv);
 
-	col = texture( sampler0, vUv ).xyz;
+	col = texture( uBackBuffer, vUv ).xyz;
 
 	#pragma unroll_loop_start
 	for ( int i = 0; i < 4; i ++ ) {
@@ -40,7 +40,7 @@ void main( void ) {
 
 	col *= smoothstep( 0.9, 0.3, len );
 
-	col = texture( sampler1, vUv ).xyz;
+	// col = texture( sampler1, vUv ).xyz;
 
 	outColor = vec4( col, 1.0 );
 
