@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as ORE from 'ore-three';
 
 import fxaaFrag from './shaders/fxaa.fs';
 import bloomBlurFrag from './shaders/bloomBlur.fs';
@@ -7,9 +8,6 @@ import dofCoc from './shaders/dofCoc.fs';
 import dofComposite from './shaders/dofComposite.fs';
 import dofBokeh from './shaders/dofBokeh.fs';
 import compositeFrag from './shaders/composite.fs';
-
-//composite shader
-import * as ORE from 'ore-three';
 
 export type PPParam = {
 	bloomBrightness?: number,
@@ -25,7 +23,6 @@ export class RenderPipeline {
 	private postProcess: ORE.PostProcess;
 
 	private depthTexture: THREE.DepthTexture;
-
 	private rt1: THREE.WebGLRenderTarget;
 
 	private fxaa: ORE.PostProcessPass;
