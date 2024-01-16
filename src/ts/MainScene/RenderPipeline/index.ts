@@ -57,6 +57,7 @@ export class RenderPipeline {
 		this.dofParams = new THREE.Vector4();
 
 		this.dofCoc = new ORE.PostProcessPass( {
+			glslVersion: THREE.GLSL3,
 			fragmentShader: dofCoc,
 			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 				uParams: {
@@ -72,6 +73,7 @@ export class RenderPipeline {
 		} );
 
 		this.dofBokeh = new ORE.PostProcessPass( {
+			glslVersion: THREE.GLSL3,
 			fragmentShader: dofBokeh,
 			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 				uParams: {
@@ -87,6 +89,7 @@ export class RenderPipeline {
 		} );
 
 		this.dofComposite = new ORE.PostProcessPass( {
+			glslVersion: THREE.GLSL3,
 			fragmentShader: dofComposite,
 			uniforms: ORE.UniformsLib.mergeUniforms( {
 				uBokehTex: {
@@ -99,6 +102,7 @@ export class RenderPipeline {
 		// fxaa
 
 		this.fxaa = new ORE.PostProcessPass( {
+			glslVersion: THREE.GLSL3,
 			fragmentShader: fxaaFrag,
 			uniforms: this.commonUniforms,
 		} );
@@ -108,6 +112,7 @@ export class RenderPipeline {
 		this.bloomRenderCount = 4;
 
 		this.bloomBright = new ORE.PostProcessPass( {
+			glslVersion: THREE.GLSL3,
 			fragmentShader: bloomBrightFrag,
 			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 				threshold: {
@@ -135,6 +140,7 @@ export class RenderPipeline {
 		for ( let i = 0; i < this.bloomRenderCount; i ++ ) {
 
 			let blurVertical = new ORE.PostProcessPass( {
+				glslVersion: THREE.GLSL3,
 				fragmentShader: bloomBlurFrag,
 				uniforms: ORE.UniformsLib.mergeUniforms( bloomCommonUniforms, {
 					uIsVertical: {
@@ -152,6 +158,7 @@ export class RenderPipeline {
 			} );
 
 			let blurHorizontal = new ORE.PostProcessPass( {
+				glslVersion: THREE.GLSL3,
 				fragmentShader: bloomBlurFrag,
 				uniforms: ORE.UniformsLib.mergeUniforms( bloomCommonUniforms, {
 					uIsVertical: {
@@ -181,6 +188,7 @@ export class RenderPipeline {
 		// composite
 
 		this.composite = new ORE.PostProcessPass( {
+			glslVersion: THREE.GLSL3,
 			fragmentShader: compositeFrag,
 			uniforms: ORE.UniformsLib.mergeUniforms( this.commonUniforms, {
 				uBloomTexture: {
